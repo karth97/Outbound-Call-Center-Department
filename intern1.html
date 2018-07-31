@@ -1,0 +1,107 @@
+<!doctype html>
+<html ng-app="myApp">
+
+        <head>
+            <style>
+
+h1{
+    color:blue;  
+
+}
+body{
+  
+  background-color: blueviolet;
+  opacity: 0.1px;
+  
+}
+            </style>
+          
+          <script data-require="angular.js@*" data-semver="2.0.0" src="https://code.angularjs.org/1.4.8/angular.js"></script>
+          <script data-require="jquery@*" data-semver="2.1.4" src="https://code.jquery.com/jquery-2.1.4.js"></script>
+        </head>
+      
+        <body ng-controller="MyCtrl">
+          <h1>Export to Excel</h1>
+          <button class="btn btn-link" ng-click="exportToExcel('#tableToExport')">
+            <span class="glyphicon glyphicon-share"></span>
+       Export to Excel
+          </button>
+          <div id="tableToExport">
+            <table border="1">
+              <thead>
+                <tr class="table-header">
+                  <th>S.no</th>
+                  <th>Name</th>
+                  <th>Ph.no</th>
+                  <th>College</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>Karthik</td>
+                  <td>9999988888</td>
+                  <td>SVIT</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>kartheek</td>
+                  <td>8888899999</td>
+                  <td>SVIT</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>chaitanya</td>
+                  <td>5555544444</td>
+                  <td>MLRIT</td>
+                </tr>
+                <tr>
+                <td>4</td>
+                        <td>praveen</td>
+                        <td>4444455555</td>
+                        <td>MLRIT</td>
+                      </tr>
+                      <tr>
+                            <td>5</td>
+                            <td>prathyuman</td>
+                            <td>1111122222</td>
+                            <td>MLRIT</td>
+                          </tr>
+                          <tr>
+                                <td>6</td>
+                                <td>janvitha</td>
+                                <td>3333344444</td>
+                                <td>MLRIT</td>
+                              </tr>
+                                              
+              </tbody>
+            </table>
+            <script>
+var myApp=angular.module("myApp",[]);
+myApp.factory('Excel',function($window){
+        var uri='data:application/vnd.ms-excel;base64,',
+            template='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
+            base64=function(s){return $window.btoa(unescape(encodeURIComponent(s)));},
+            format=function(s,c){return s.replace(/{(\w+)}/g,function(m,p){return c[p];})};
+        return {
+            tableToExcel:function(tableId,worksheetName){
+                var table=$(tableId),
+                    ctx={worksheet:worksheetName,table:table.html()},
+                    href=uri+base64(format(template,ctx));
+                return href;
+            }
+        };
+    })
+    .controller('MyCtrl',function(Excel,$timeout,$scope){
+      $scope.exportToExcel=function(tableId){ 
+            var exportHref=Excel.tableToExcel(tableId,'WireWorkbenchDataExport');
+            $timeout(function(){location.href=exportHref;},100); 
+        }
+    });
+</script>
+</div>
+
+        </body>
+      
+      </html>
+      
